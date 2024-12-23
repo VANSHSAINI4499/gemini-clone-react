@@ -7,13 +7,20 @@ import google_gemini_icon from "../../assets/google-gemini-icon.svg";
 const Main = () => {
   const {
     onSent,
-    recentPrompt,
+    recentPrompts,
     showResult,
     loading,
     resultData,
     setInput,
     input,
   } = useContext(Context);
+
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      onSent(); // Trigger the onSent function when Enter is pressed
+    }
+  };
+
   return (
     <div className="main">
       <div className="nav">
@@ -50,30 +57,27 @@ const Main = () => {
           </>
         ) : (
           <div className="result">
-            <div className="UserInput"></div>
-          <div className="resul-title">
+            <div className="result-title">
+              <p>{recentPrompts}</p>
+            </div>
 
-            
-            <p>{recentPrompt}</p>
+            <div className="result-data">
+              <img
+                src={google_gemini_icon}
+                alt=""
+                className={loading ? "rotating" : ""}
+              />
+              {loading ? (
+                <div className="loader">
+                  <hr />
+                  <hr />
+                  <hr />
+                </div>
+              ) : (
+                <p dangerouslySetInnerHTML={{ __html: resultData }}></p>
+              )}
+            </div>
           </div>
-          <div className="result-data">
-            <img
-              src={google_gemini_icon}
-              alt=""
-              className={loading ? "rotating" : ""}
-            />
-            {loading ? (
-              <div className="loader">
-                <hr />
-                <hr />
-                <hr />
-              </div>
-            ) : (
-              <p dangerouslySetInnerHTML={{ __html: resultData }}></p>
-            )}
-          </div>
-        </div>
-        
         )}
 
         <div className="main-bottom">
@@ -84,7 +88,8 @@ const Main = () => {
               }}
               value={input}
               type="text"
-              placeholder="Enter a prompt here"
+              placeholder="Ask Gemini"
+              onKeyDown={handleKeyDown} // Add the keydown event listener
             />
             <div>
               <img src={assets.gallery_icon} alt="" />
@@ -95,7 +100,7 @@ const Main = () => {
           </div>
           <p className="bottom-info">
             Gemini may display inaccurate info, including about people, so
-            double-ckeck its responses. Your privacy and Gemini Apps
+            double-check its responses. Your privacy and Gemini Apps
           </p>
         </div>
       </div>
