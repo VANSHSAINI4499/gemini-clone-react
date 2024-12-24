@@ -46,6 +46,7 @@
   .recent {
     display: flex;
     flex-direction: column;
+    animation: fadeIn 1.5s;
   }
   
   .recent-title {

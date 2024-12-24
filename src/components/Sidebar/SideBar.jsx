@@ -1,57 +1,59 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import "./SideBar.css";
 import { assets } from "../../assets/assets";
 import menu_close_icon from "../../assets/menu_close.svg";
-import { useContext } from "react";
 import { Context } from "../../context/Context";
 
 const SideBar = () => {
-  const [extented, setExtented] = useState(false);
-  const { onSent, prevPrompts, setRecentsPrompts } = useContext(Context);
-  const loadPrompt=async (propmt)=>{
-    setRecentsPrompts(prompt)
-     await onSent(prompt)
+  const [extended, setExtended] = useState(false); // Fixed spelling of `extended`
+  const { onSent, prevPrompts, setRecentPrompt ,newChat} = useContext(Context); // Corrected `setRecentsPrompts` to `setRecentPrompt`
+
+  const loadPrompt = async (prompt) => {
+    setRecentPrompt(prompt); // Set the recent prompt in context
+    await onSent(prompt); // Fetch the result for the selected prompt
   };
 
   return (
-    <div className={`sidebar ${extented ? "extended" : ""}`}>
+    <div className={`sidebar ${extended ? "extended" : ""}`}>
       <div className="top">
         <img
-          onClick={() => setExtented((prev) => !prev)}
-          className={`menu ${extented ? "rotate" : ""}`}
-          src={extented ? menu_close_icon : assets.menu_icon}
+          onClick={() => setExtended((prev) => !prev)} // Toggle sidebar extension
+          className={`menu ${extended ? "rotate" : ""}`}
+          src={extended ? menu_close_icon : assets.menu_icon}
           alt="Menu Icon"
         />
-        <div className="newchat">
+        <div onClick={()=>newChat()}className="newchat">
           <img src={assets.plus_icon} alt="Plus Icon" />
-          {extented ? <p>New Chat</p> : null}
+          {extended ? <p>New Chat</p> : null}
         </div>
-        {extented ? (
+        {extended ? (
           <div className="recent">
-            <p className="recent-title">Recent Title</p>
-            {prevPrompts.map((item, index) => {
-              return (
-                <div onClick={()=>loadPrompt(item)} className="recent-entry">
-                  <img src={assets.message_icon} alt="Message Icon" />
-                  <p>{item.slice(0,18 )}...</p>
-                </div>
-              );
-            })}
+            <p className="recent-title">Recent Prompts</p>
+            {prevPrompts.map((item, index) => (
+              <div
+                key={index}
+                onClick={() => loadPrompt(item)} // Load the selected prompt
+                className="recent-entry"
+              >
+                <img src={assets.message_icon} alt="Message Icon" />
+                <p title={item}>{item.slice(0, 18)}...</p> {/* Tooltip added */}
+              </div>
+            ))}
           </div>
         ) : null}
       </div>
       <div className="bottom">
         <div className="bottom-item recent-entry">
           <img src={assets.question_icon} alt="Help Icon" />
-          {extented ? <p>Help</p> : null}
+          {extended ? <p>Help</p> : null}
         </div>
         <div className="bottom-item recent-entry">
           <img src={assets.history_icon} alt="Activity Icon" />
-          {extented ? <p>Activity</p> : null}
+          {extended ? <p>Activity</p> : null}
         </div>
         <div className="bottom-item recent-entry">
           <img src={assets.setting_icon} alt="Settings Icon" />
-          {extented ? <p>Settings</p> : null}
+          {extended ? <p>Settings</p> : null}
         </div>
       </div>
     </div>
